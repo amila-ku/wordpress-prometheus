@@ -1,0 +1,44 @@
+version: '3.1'
+
+services:
+   web:
+     image: nginx:latest
+     ports:
+       - "8080:80"
+     volumes:
+       - wordpress:/var/www/html
+       - ./nginx/log:/var/log/nginx
+       - ./nginx/nginx_old.conf:/etc/nginx/conf.d/default.conf
+     depends_on:
+       - wordpress
+     links:
+       - wordpress:php
+
+   mysqldb:
+     image: mysql:5.7
+     volumes:
+       - db_data:/var/lib/mysql
+     restart: always
+     environment:
+       MYSQL_ROOT_PASSWORD: wordpressroot
+       MYSQL_DATABASE: wordpress
+       MYSQL_USER: wordpress
+       MYSQL_PASSWORD: wordpress
+
+   wordpress:
+     depends_on:
+       - mysqldb
+     image: wordpress:4.5.2-fpm
+     restart: always
+     volumes:
+       - wordpress:/var/www/html
+       - ./php/log:/var/log/php
+     environment:
+       WORDPRESS_DB_HOST: mysqldb:3306
+       WORDPRESS_DB_USER: wordpress
+       WORDPRESS_DB_PASSWORD: wordpress
+
+
+volumes:
+    db_data:
+    wordpress:
