@@ -62,6 +62,10 @@ services:
       - '-alertmanager.url=http://alertmanager:9093'
       - '-web.console.libraries=/usr/share/prometheus/console_libraries'
       - '-web.console.templates=/usr/share/prometheus/consoles'
+     links:
+      - cadvisor
+     depends_on:
+      - cadvisor
 
    node-exporter:
      image: prom/node-exporter
@@ -71,10 +75,19 @@ services:
        - /sys:/host/sys:ro
        - /:/rootfs:ro
      command: '-collector.procfs=/host/proc -collector.sysfs=/host/sys -collector.filesystem.ignored-mount-points="^(/rootfs|/host|)/(sys|proc|dev|host|etc)($$|/)" collector.filesystem.ignored-fs-types="^(sys|proc|auto|cgroup|devpts|ns|au|fuse\.lxc|mqueue)(fs|)$$"'
-
+   
+   cadvisor:
+    image: google/cadvisor
+    restart: always
+    volumes:
+      - /:/rootfs:ro
+      - /var/run:/var/run:rw
+      - /sys:/sys:ro
+      - /var/lib/docker/:/var/lib/docker:ro
 
 volumes:
     db_data:
     wordpress_data:
     grafana_data:
     prometheus_data:
+
