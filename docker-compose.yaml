@@ -6,9 +6,9 @@ services:
      ports:
        - "8080:80"
      volumes:
-       - wordpress:/var/www/html
+       - wordpress_data:/var/www/html
        - ./nginx/log:/var/log/nginx
-       - ./nginx/nginx_old.conf:/etc/nginx/conf.d/default.conf
+       - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf
      depends_on:
        - wordpress
      links:
@@ -31,14 +31,25 @@ services:
      image: wordpress:4.5.2-fpm
      restart: always
      volumes:
-       - wordpress:/var/www/html
+       - wordpress_data:/var/www/html
        - ./php/log:/var/log/php
      environment:
        WORDPRESS_DB_HOST: mysqldb:3306
        WORDPRESS_DB_USER: wordpress
        WORDPRESS_DB_PASSWORD: wordpress
 
+   grafana:
+     image: grafana/grafana:latest
+     environment:
+       GF_SECURITY_ADMIN_PASSWORD: "foobar"
+       GF_USERS_ALLOW_SIGN_UP: "false"
+     ports:
+       - "3000:3000"
+     volumes:
+       - grafana_data:/var/lib/grafana
+
 
 volumes:
     db_data:
-    wordpress:
+    wordpress_data:
+    grafana_data:
