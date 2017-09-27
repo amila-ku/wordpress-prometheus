@@ -33,7 +33,7 @@ scrape_configs:
  
   - job_name: 'node_aws'
     ec2_sd_configs:
-      - region: 'eu-west-2'
+      - region: 'us-west-2'
         profile: 'prometheus-ro'
         port: 9100
     relabel_configs:
