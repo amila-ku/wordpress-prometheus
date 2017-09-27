@@ -29,4 +29,18 @@ scrape_configs:
     # scheme defaults to 'http'.
 
     static_configs:
-         - targets: ['localhost:9090','cadvisor:8080','node-exporter:9100']
+         - targets: ['localhost:9090','cadvisor:8080']
+ 
+  - job_name: 'node_aws'
+    ec2_sd_configs:
+      - region: 'eu-west-2'
+        profile: 'prometheus-ro'
+        port: 9100
+    relabel_configs:
+        # Only monitor instances with a Name starting with "SD Demo"
+      - source_labels: [__meta_ec2_tag_Name]
+        regex: wp*
+        action: keep
+        # Use the instance ID as the instance label
+      - source_labels: [__meta_ec2_instance_id]
+        target_label: instance  
