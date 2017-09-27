@@ -37,8 +37,8 @@ scrape_configs:
     metrics_path: /metrics
     scheme: http
     ec2_sd_configs:
-      - region: 'us-west-2'
-        profile: 'prometheus-ro'
+      - region: us-west-2
+        profile: wp_stack_prometheus_profile 
         port: 9100
     relabel_configs:
         # Use the instance ID as the instance label
